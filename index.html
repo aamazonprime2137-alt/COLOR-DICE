@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Roll Color Dice 🎲 | Kolorowe kostki online</title>
+
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Rzuć kolorowymi kostkami online! Roll Color Dice to zabawna gra z kostkami w kolorach Red, Orange, Yellow, Green, Blue i Purple.">
+  <meta name="keywords" content="dice, kostki online, kolorowe kostki, roll dice, roll color dice, kostki do gry, gra online">
+  <meta name="author" content="Twoja Nazwa">
+
+  <!-- Open Graph (podgląd w social mediach) -->
+  <meta property="og:title" content="Roll Color Dice 🎲 | Kolorowe kostki online">
+  <meta property="og:description" content="Zagraj w kolorowe kostki online – rzuć Red, Orange, Yellow, Green, Blue lub Purple!">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/2111/2111370.png">
+  <meta property="og:url" content="https://twoja-strona.pl">
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" type="image/png">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      color: white;
+      overflow-x: hidden;
+    }
+
+    /* Galaxy background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url("https://media.tenor.com/2roX3uxz_68AAAAC/space-stars.gif") center/cover no-repeat;
+      z-index: -1;
+    }
+
+    /* Discord logo */
+    .discord-logo {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      z-index: 10;
+    }
+
+    .discord-logo:hover {
+      transform: scale(1.15);
+    }
+
+    .container {
+      background: rgba(0,0,0,0.6);
+      margin: 60px auto 40px auto;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 800px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      color: #aaf;
+      text-shadow: 0 0 10px #00f;
+    }
+
+    .dice {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 20px 0;
+      gap: 15px;
+    }
+
+    .die {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #444; /* startowy szary */
+      animation: roll 0.6s ease;
+      position: relative;
+      transition: background 0.6s ease;
+    }
+
+    @keyframes roll {
+      0% { transform: rotate(0) scale(1); opacity: 0.5; }
+      50% { transform: rotate(360deg) scale(1.2); opacity: 0.8; }
+      100% { transform: rotate(720deg) scale(1); opacity: 1; }
+    }
+
+    .pip {
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+    }
+
+    select, button {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+    }
+
+    button {
+      background: orange;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    button:disabled {
+      background: gray;
+      cursor: not-allowed;
+      transform: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Logo Discord -->
+  <a href="https://discord.gg/NaAVjmN2" target="_blank">
+    <img class="discord-logo" src="https://cdn-icons-png.flaticon.com/512/2111/2111370.png" alt="Discord">
+  </a>
+
+  <div class="container">
+    <h1>ROLL COLOR DICE 🎲</h1>
+    <p>
+      6-sided Color Dice — 
+      <span style="color: red;">Red</span>, 
+      <span style="color: orange;">Orange</span>, 
+      <span style="color: yellow;">Yellow</span>, 
+      <span style="color: green;">Green</span>, 
+      <span style="color: blue;">Blue</span> 
+      and <span style="color: purple;">Purple</span>
+    </p>
+
+    <label for="diceCount">Ilość kostek</label>
+    <select id="diceCount">
+      <option value="1">1 dice</option>
+      <option value="2">2 dice</option>
+      <option value="3" selected>3 dice</option>
+      <option value="4">4 dice</option>
+      <option value="5">5 dice</option>
+      <option value="6">6 dice</option>
+    </select>
+
+    <div class="dice" id="dice"></div>
+
+    <button id="rollBtn" onclick="rollDice()">Roll Again !</button>
+  </div>
+
+  <script>
+    const diceContainer = document.getElementById('dice');
+    const diceCount = document.getElementById('diceCount');
+    const rollBtn = document.getElementById('rollBtn');
+    let isRolling = false;
+
+    function createPip() {
+      let pip = document.createElement("div");
+      pip.className = "pip";
+      return pip;
+    }
+
+    function rollDice() {
+      if (isRolling) return;
+      isRolling = true;
+      rollBtn.disabled = true;
+
+      diceContainer.innerHTML = "";
+      let colors = ["Red","Orange","Yellow","Green","Blue","Purple"];
+      let usedColors = [];
+
+      for (let i = 0; i < diceCount.value; i++) {
+        let die = document.createElement("div");
+        die.className = "die";
+        diceContainer.appendChild(die);
+
+        let pip = createPip();
+        die.appendChild(pip);
+
+        setTimeout(() => {
+          let color = colors[Math.floor(Math.random() * colors.length)];
+
+          // jeśli już był, daj drugą szansę
+          if (usedColors.includes(color)) {
+            let secondTry = colors[Math.floor(Math.random() * colors.length)];
+            color = secondTry;
+          }
+
+          die.style.background = color.toLowerCase();
+          usedColors.push(color);
+        }, 600);
+      }
+
+      // cooldown 2 sekundy
+      setTimeout(() => {
+        isRolling = false;
+        rollBtn.disabled = false;
+      }, 2000);
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space") {
+        rollDice();
+      }
+    });
+
+    diceCount.addEventListener("change", rollDice);
+    rollDice();
+  </script>
+</body>
+</html>
